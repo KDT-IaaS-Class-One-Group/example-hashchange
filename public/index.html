@@ -1,61 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>example-hashchange</title>
-</head>
-<body>
-  <ul>
-    <li><a href="#page1">Page 1</a></li>
-    <li><a href="#page2">Page 2</a></li>
-    <li><a href="#page3">Page 3</a></li>
-    <li><a href="#page4">Page 4</a></li>
-  </ul>
-  <div id="root"></div>
-  <script>
-    function component(elementNode, attributes, children) {
-      let elementStr = `<${elementNode}`;
-      for (let key in attributes) {
-        elementStr += ` ${key}="${attributes[key]}"`;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>example-hashchange</title>
+  </head>
+  <body>
+    <ul>
+      <li><a href="#page1">Page 1</a></li>
+      <li><a href="#page2">Page 2</a></li>
+      <li><a href="#page3">Page 3</a></li>
+      <li><a href="#page4">Page 4</a></li>
+    </ul>
+    <div id="root"></div>
+    <script>
+      function createStyleObject(...styleArray) {
+        const styleString = styleArray.map(([key, value]) => `${key}:${value};`).join(" ");
+        return { style: styleString };
       }
-      elementStr += '>';
-      if (children) {
-        children.forEach((child) => {
-          if (typeof child === 'string') {
-            elementStr += child;
-          } else {
-            elementStr += component(child.elementNode, child.attributes, child.children);
-          }
-        });
-      }
-      elementStr += `</${elementNode}>`;
-      return elementStr;
-    }
 
-    window.addEventListener('hashchange', () => {
-      const contentDiv = document.getElementById('root');
-      const hash = window.location.hash.substr(1);
-
-      switch (hash) {
-        case 'page1':
-          contentDiv.innerHTML = component('h1', { style: 'color:blue;' }, ["This is Page 1"])
-          break;
-        case 'page2':
-          contentDiv.innerHTML = component('div', { style: 'background-color:cadetblue;' }, [component('h1', {}, ['This is Page 2'])]);
-          break;
-        case 'page3':
-          contentDiv.innerHTML = component('div', {style:'display:flex; justifly-content:center; color: #ff2222;'}, [component('h1', {}, ['This is Page 3'])]);
-          break;
-        case 'page4':
-          contentDiv.innerHTML = component('div', {style:'display:flex; justifly-content:center; color: #333; '}, [component('h1', {}, ['This is Page 4'])])
-          break;
-        default:
-          contentDiv.innerHTML = component('h1', {}, ['반갑습니다. 접속할 때 보이는 페이지(처럼보이는) element입니다.']); 
+      function component(elementNode, attributes, children) {
+        let elementStr = `<${elementNode}`;
+        for (let key in attributes) {
+          elementStr += ` ${key}="${attributes[key]}"`;
+        }
+        elementStr += ">";
+        if (children) {
+          children.forEach((child) => {
+            if (typeof child === "string") {
+              elementStr += child;
+            } else {
+              elementStr += component(child.elementNode, child.attributes, child.children);
+            }
+          });
+        }
+        elementStr += `</${elementNode}>`;
+        return elementStr;
       }
-    });
-    
-    window.dispatchEvent(new Event('hashchange'));
-  </script>
-</body>
+
+      window.addEventListener("hashchange", () => {
+        const contentDiv = document.getElementById("root");
+        const hash = window.location.hash.substr(1);
+
+        switch (hash) {
+          case "page1":
+            let page1Style = createStyleObject(["background-color", "yellow"], ["color", "red"]);
+            contentDiv.innerHTML = component(
+              "h1",
+              page1Style,
+              ["This is Page 1"]
+            );
+            break;
+          case "page2":
+            let page2Style = createStyleObject(["display", "flex"], ["justify-content", "center"], ["color", "#22ff22"]);
+            contentDiv.innerHTML = component(
+              "div",
+              page2Style,
+              [component("h1", {}, ["This is Page 2"])]
+            );
+            break;
+          case "page3":
+            let page3Style = createStyleObject(["display", "flex"], ["justify-content", "center"], ["color", "#333"]);
+            contentDiv.innerHTML = component(
+              "div",
+              page3Style,
+              [component("h1", {}, ["This is Page 3"])]
+            );
+            break;
+          case "page4":
+            let page4Style = createStyleObject(["display", "flex"], ["justify-content", "center"], ["color", "#555"]);
+            contentDiv.innerHTML = component(
+              "div",
+              page4Style,
+              [component("h1", {}, ["This is Page 4"])]
+            );
+            break;
+          default:
+            contentDiv.innerHTML = component("h1", {}, [
+              "반갑습니다. 접속할 때 보이는 페이지(처럼보이는) element입니다."
+            ]);
+        }
+      });
+
+      window.dispatchEvent(new Event("hashchange"));
+    </script>
+  </body>
 </html>
