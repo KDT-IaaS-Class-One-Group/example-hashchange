@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/KDT-IaaS-Class-One-Group/example-hashchange/issues"
   },
-  "homepage": "https://github.com/KDT-IaaS-Class-One-Group/example-hashchange#readme"
+  "homepage": "https://github.com/KDT-IaaS-Class-One-Group/example-hashchange#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
 }
